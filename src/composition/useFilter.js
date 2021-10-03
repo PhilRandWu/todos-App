@@ -27,7 +27,7 @@ export default function useFilter(todoRef) {
         return filter(todoRef.value,'active').length;
     })
     const completedRef = computed(() => {
-        console.log(filter(todoRef.value,'completed').length);
+        // console.log(filter(todoRef.value,'completed').length);
         return filter(todoRef.value,'completed').length;
     }) 
     return {

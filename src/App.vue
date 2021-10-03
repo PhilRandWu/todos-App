@@ -12,26 +12,33 @@
           @keypress.enter="addNewTodo"
         />
       </header>
-      <section class="main">
-        <input id="toggle-all" class="toggle-all" type="checkbox" />
+      <section class="main" v-show="todoRef.length > 0">
+        <input id="toggle-all" class="toggle-all" type="checkbox" v-model="allDoneRef"/>
         <label for="toggle-all">Mark all as complete</label>
         <ul class="todo-list">
           <li
             class="todo"
             v-for="item in filterTodoRef"
             :key="item.id"
-            :class="{ completed: item.completed }"
+            :class="{ completed: item.completed, editing: item == editTodoRef }"
           >
             <div class="view">
               <input class="toggle" type="checkbox" v-model="item.completed" />
-              <label>{{ item.title }}</label>
+              <label @dblclick="editToEvent(item)">{{ item.title }}</label>
               <button class="destroy"></button>
             </div>
-            <input class="edit" type="text" />
+            <input
+              class="edit"
+              type="text"
+              v-model="item.title"
+              @blur="doneEditEvent(item)"
+              @keyup.enter="doneEditEvent(item)"
+              @keyup.escape="cancelEditEvent(item)"
+            />
           </li>
         </ul>
       </section>
-      <footer class="footer">
+      <footer class="footer"  v-show="todoRef.length > 0">
         <span class="todo-count">
           <strong>{{ remainingRef }}</strong>
           <span>item{{ remainingRef > 1 ? "s" : "" }} left</span>
@@ -55,7 +62,11 @@
             >
           </li>
         </ul>
-        <button class="clear-completed" style="display: none" v-show="completedRef > 0">
+        <button
+          class="clear-completed"
+          style="display: none"
+          v-show="completedRef > 0"
+        >
           Clear completed
         </button>
       </footer>
@@ -67,6 +78,7 @@
 import { useTodoList } from "./composition/useTodoList";
 import { useNewTodoList } from "./composition/useNewTodo";
 import useFilter from "./composition/useFilter";
+import { useEdit } from "./composition/useEdit";
 
 export default {
   setup() {
@@ -74,6 +86,7 @@ export default {
       ...useTodoList(),
       ...useNewTodoList(todoRef),
       ...useFilter(todoRef),
+      ...useEdit(todoRef),
     };
   },
 };
