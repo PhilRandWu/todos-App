@@ -25,7 +25,7 @@
             <div class="view">
               <input class="toggle" type="checkbox" v-model="item.completed" />
               <label @dblclick="editToEvent(item)">{{ item.title }}</label>
-              <button class="destroy"></button>
+              <button class="destroy" @click="remove(item)"></button>
             </div>
             <input
               class="edit"
@@ -66,6 +66,7 @@
           class="clear-completed"
           style="display: none"
           v-show="completedRef > 0"
+          @click="removeCompleted"
         >
           Clear completed
         </button>
@@ -79,6 +80,7 @@ import { useTodoList } from "./composition/useTodoList";
 import { useNewTodoList } from "./composition/useNewTodo";
 import useFilter from "./composition/useFilter";
 import { useEdit } from "./composition/useEdit";
+import useRemove from "./composition/useRemove";
 
 export default {
   setup() {
@@ -87,6 +89,7 @@ export default {
       ...useNewTodoList(todoRef),
       ...useFilter(todoRef),
       ...useEdit(todoRef),
+      ...useRemove(todoRef),
     };
   },
 };
